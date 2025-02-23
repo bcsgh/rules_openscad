@@ -6,6 +6,12 @@ module(
     compatibility_level = 0,
 )
 
+bazel_dep(
+    name = "bazel_skylib",
+    version = "1.7.1",
+    dev_dependency = True,
+)
+
 # Here are the files being defined for each OS
 http_appimage = use_repo_rule("//:http_appimage.bzl", "http_appimage")
 http_appimage(
