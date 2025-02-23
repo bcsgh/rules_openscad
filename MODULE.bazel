@@ -12,6 +12,12 @@ bazel_dep(
     dev_dependency = True,
 )
 
+bazel_dep(
+    name = "stardoc",
+    version = "0.8.0",
+    dev_dependency = True,
+)
+
 # Here are the files being defined for each OS
 http_appimage = use_repo_rule("//:http_appimage.bzl", "http_appimage")
 http_appimage(

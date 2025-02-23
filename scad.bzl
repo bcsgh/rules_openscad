@@ -49,10 +49,6 @@ scad_library = rule(
     },
     doc = """
 Create a 3D library to wrap OpenSCAD code to be linked by other libraries or objects
-
-Args:
-    srcs: (list[file]) List of files that compile to generate this library
-    deps: (list[target]) Other libraries this library depends on
 """,
 )
 
@@ -96,10 +92,6 @@ scad_object = rule(
     },
     doc = """
 Create a 3D object based on the provided code and libraries
-
-Args:
-    srcs: (list[file]) List of files that compile to generate this object
-    deps: (list[target]) List of libraries this object depends on
 """,
 )
 
