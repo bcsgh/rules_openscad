@@ -116,7 +116,7 @@ def _scad_test_impl(ctx):
         content = "#!/bin/bash\n" + " ".join([
             "env; pwd; find -type f; find -type l;",
             unittest_binary.short_path,
-            "--openscad_command '%s'" % _get_openscad_executable(ctx).path,
+            "--openscad_command '%s'" % _get_openscad_executable(ctx).short_path,
             "--scad_file_under_test %s" % ctx.files.library_under_test[0].path,
             " ".join([
                 "--testcases \"%s#%s/%s\"" % (
@@ -143,7 +143,7 @@ def _scad_test_impl(ctx):
                 transitive_files = depset(
                     direct = ctx.files.tests + [unittest_script],
                     transitive = [
-                        ctx.attr.library_under_test.files, 
+                        ctx.attr.library_under_test.files,
                         depset([
                             ctx.attr._unittest_binary[PyRuntimeInfo].interpreter,
                         ]),
