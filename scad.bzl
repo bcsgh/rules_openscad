@@ -49,15 +49,14 @@ scad_library = rule(
     },
     doc = """
 Create a 3D library to wrap OpenSCAD code to be linked by other libraries or objects
-
-Args:
-    srcs: (list[file]) List of files that compile to generate this library
-    deps: (list[target]) Other libraries this library depends on
 """,
 )
 
 def _scad_object_impl(ctx):
-    stl_output = ctx.actions.declare_file(ctx.label.name + ".stl")
+    if ctx.outputs.out:
+        stl_output = ctx.actions.declare_file(ctx.outputs.out.basename)
+    else:
+        stl_output = ctx.actions.declare_file(ctx.label.name + ".stl")
     stl_inputs = ctx.files.srcs
     deps = []
     for one_transitive_dep in [dep[DefaultInfo].files for dep in ctx.attr.deps]:
@@ -89,6 +88,9 @@ scad_object = rule(
     attrs = {
         "srcs": srcs_attrs,
         "deps": deps_attrs,
+        "out": attr.output(
+            doc = "The name of the generated file.",
+        ),
         "_openscad_files": attr.label(
             default = Label("//:openscad"),
             cfg = "exec",
@@ -96,10 +98,6 @@ scad_object = rule(
     },
     doc = """
 Create a 3D object based on the provided code and libraries
-
-Args:
-    srcs: (list[file]) List of files that compile to generate this object
-    deps: (list[target]) List of libraries this object depends on
 """,
 )
 
@@ -116,7 +114,7 @@ def _scad_test_impl(ctx):
         content = "#!/bin/bash\n" + " ".join([
             "env; pwd; find -type f; find -type l;",
             unittest_binary.short_path,
-            "--openscad_command '%s'" % _get_openscad_executable(ctx).path,
+            "--openscad_command '%s'" % _get_openscad_executable(ctx).short_path,
             "--scad_file_under_test %s" % ctx.files.library_under_test[0].path,
             " ".join([
                 "--testcases \"%s#%s/%s\"" % (
@@ -143,7 +141,7 @@ def _scad_test_impl(ctx):
                 transitive_files = depset(
                     direct = ctx.files.tests + [unittest_script],
                     transitive = [
-                        ctx.attr.library_under_test.files, 
+                        ctx.attr.library_under_test.files,
                         depset([
                             ctx.attr._unittest_binary[PyRuntimeInfo].interpreter,
                         ]),

@@ -4,6 +4,7 @@ load(
     "scad_object",
     "scad_test",
 )
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 
 scad_library(
     name = "cylinder_section",
@@ -14,6 +15,13 @@ scad_library(
 scad_object(
     name = "cylinder_section_obj",
     srcs = ["cylinder_section_obj.scad"],
+    deps = [":cylinder_section"],
+)
+
+scad_object(
+    name = "cylinder_section_obj_rename",
+    srcs = ["cylinder_section_obj.scad"],
+    out = "other.stl",
     deps = [":cylinder_section"],
 )
 
@@ -72,4 +80,14 @@ scad_test(
         "testdata/hollow_cylinder/ed_wt.stl": "HollowCylinder(length=10,external_diameter=3,wall_thickness=0.2)",
         "testdata/hollow_cylinder/id_wt.stl": "HollowCylinder(length=10,internal_diameter=5,wall_thickness=3)",
     },
+)
+
+build_test(
+    name = "objects_build_test",
+    targets = [
+        ":cylinder_section_obj",
+        ":other.stl",
+        ":hardware_obj",
+        ":hollow_cylinder_obj",
+    ],
 )

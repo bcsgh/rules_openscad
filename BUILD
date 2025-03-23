@@ -1,3 +1,5 @@
+load("@stardoc//stardoc:stardoc.bzl", "stardoc")
+
 py_library(
     name = "scad_utils",
     srcs = ["scad_utils.py"],
@@ -33,4 +35,11 @@ alias(
         # "@bazel_tools//src/conditions:windows" : ":openscad_windows",
     }),
     visibility = ["//visibility:public"],
+)
+
+stardoc(
+    name = "docs",
+    input = "scad.bzl",
+    out = "scad.md",
+    tags = ["manual"],
 )
